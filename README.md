@@ -24,30 +24,55 @@ mp_weapon_lmg | Spitfire
 mp_weapon_rspn101 | R201
 
 mp_weapon_vinson | Flatline
+
 mp_weapon_lstar | L-Star
+
 mp_weapon_g2 | G2
+
 mp_weapon_r97 | R97
+
 mp_weapon_car | CAR
+
 mp_weapon_hemlok_smg | Volt
+
 mp_weapon_dmr | DMR
+
 mp_weapon_wingman | Wingman
+
 mp_weapon_wingman_n | Wingman Elite
+
 mp_weapon_semipistol | P2016
+
 mp_weapon_autopistol | RE-45
+
 mp_weapon_mgl | MGL
+
 mp_weapon_sniper | Kraber
+
 mp_weapon_shotgun | EVA-8
+
 mp_weapon_mastiff | Mastiff
+
 mp_weapon_smr | SMR
+
 mp_weapon_rocket_launcher | Archer
+
 mp_weapon_arc_launcher | Thunderbolt
+
 mp_weapon_shotgun_pistol | Mozambique
+
 mp_weapon_pulse_lmg | Cold War
+
 mp_weapon_softball | Softball
+
 mp_weapon_doubletake | Doubletake
+
 mp_weapon_alternator_smg | Alternator
+
 mp_weapon_esaw | Devotion
+
 mp_weapon_epg | EPG
+
 mp_weapon_rspn101_og | R101
 
 
