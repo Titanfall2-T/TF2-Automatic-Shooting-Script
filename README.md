@@ -11,4 +11,6 @@ Along with these two things, the mod can reduce recoil on some weapons via autom
 
 `ass_use_all` - Whether the ASS mod should engage on all weapons or not. Set to `1` to enable this feature, set to `0` to disable it.
 
-`ass_weapons` - What weapons to use with the ASS mod. This can be formated like so : 
+`ass_weapons` - What weapons to use with the ASS mod. This can be formated like so : `ass_weapons "weapon_name,weapon_name,weapon_name` Here's an example of how to use it : `ass_weapons "mp_weapon_r97,mp_weapon_hemlok_smg,mp_weapon_semipistol,mp_weapon_alternator_smg` a `,` character should separate each weapon name. If you have `ass_use_all` set to `0` then these are the weapons the ASS mod will engage for. Every other weapon will function as normal.
+
+`ass_power
