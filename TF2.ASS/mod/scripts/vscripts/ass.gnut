@@ -1,0 +1,94 @@
+global function ass_Init
+
+array<string> weaponNames = [ "mp_weapon_hemlok","mp_weapon_lmg","mp_weapon_rspn101","mp_weapon_vinson","mp_weapon_lstar","mp_weapon_g2","mp_weapon_r97","mp_weapon_car","mp_weapon_hemlok_smg","mp_weapon_dmr","mp_weapon_wingman","mp_weapon_wingman_n","mp_weapon_semipistol","mp_weapon_autopistol","mp_weapon_mgl","mp_weapon_sniper","mp_weapon_shotgun","mp_weapon_mastiff","mp_weapon_smr","mp_weapon_rocket_launcher","mp_weapon_arc_launcher","mp_weapon_shotgun_pistol","mp_weapon_pulse_lmg","mp_weapon_softball","mp_weapon_doubletake","mp_weapon_alternator_smg","mp_weapon_esaw","mp_weapon_epg","mp_weapon_rspn101_og" ]
+
+bool automaticFiringRunning = false
+
+void function ass_Init()
+{
+    RegisterButtonPressedCallback( GetConVarInt( "ass_attack_button" ), ass_LocalClientPlayerStartedFiring )
+    RegisterButtonReleasedCallback( GetConVarInt( "ass_attack_button" ), ass_LocalClientPlayerStoppedFiring )
+}
+
+void function ass_LocalClientPlayerStartedFiring( int buttonEnum )
+{
+    if( GetConVarInt( "ass_enabled" ) == 0 )
+    {
+        return
+    }
+    //print( "[ASS][DEBUG] Local client player pressed attack button" )
+    if( GetLocalClientPlayer().GetActiveWeapon() == null )
+    {
+        //print( "[ASS][DEBUG] Local client player weapon is null" )
+        return
+    }
+    if( GetConVarInt( "ass_use_all" ) == 1 )
+    {
+        //print( "[ASS][DEBUG] Checking if local client player is using a valid weapon...")
+        for( int weaponNamesIndex; weaponNamesIndex < weaponNames.len(); weaponNamesIndex += 1 )
+        {
+            if( GetLocalClientPlayer().GetActiveWeapon().GetWeaponClassName() == weaponNames[ weaponNamesIndex ] )
+            {
+                //print( "[ASS][DEBUG] Local client player is using a valid weapon" )
+                //print( "[ASS][DEBUG] Starting automatic firing thread..." )
+                thread ass_StartAutomaticFiring( GetLocalClientPlayer().GetActiveWeapon() )
+                return
+            }
+        }
+    }
+    //print( "[ASS][DEBUG] Checking if local client player is using a configured ASS weapon..." )
+    for( int weaponNamesIndex; weaponNamesIndex < weaponNames.len(); weaponNamesIndex += 1 )
+    {
+        if( GetLocalClientPlayer().GetActiveWeapon().GetWeaponClassName() == weaponNames[ weaponNamesIndex ] && GetConVarString( "ass_weapons" ).find( weaponNames[ weaponNamesIndex ] ) != null )
+        {
+            //print( "[ASS][DEBUG] Local client player is using a configured ASS weapon" )
+            //print( "[ASS][DEBUG] Starting automatic firing thread..." )
+            thread ass_StartAutomaticFiring( GetLocalClientPlayer().GetActiveWeapon() )
+            return
+        }
+    }
+}
+
+void function ass_LocalClientPlayerStoppedFiring( int buttonEnum )
+{
+    //print( "[ASS][DEBUG] Local client player stopped firing" )
+    automaticFiringRunning = false
+}
+
+void function ass_StartAutomaticFiring( entity weaponEntity )
+{
+    //print( "[ASS][DEBUG] Automatic firing thread started" )
+    automaticFiringRunning = true
+    while( automaticFiringRunning == true )
+    {
+        GetLocalClientPlayer().ClientCommand( "+attack" )
+        /*while( GetLocalClientPlayer().GetActiveWeapon() != null && GetLocalClientPlayer().GetActiveWeapon().IsReadyToFire() == true )
+        {
+            wait( 0.0 )
+        }*/
+        wait( 0.0 )
+        GetLocalClientPlayer().ClientCommand( "-attack" )
+        if( IsValid( GetLocalClientPlayer() ) && GetLocalClientPlayer().GetActiveWeapon() == null || GetLocalClientPlayer().GetActiveWeapon() != weaponEntity )
+        {
+            //print( "[ASS][DEBUG] Local client player weapon is null" )
+            automaticFiringRunning = false
+            break
+        }
+        if( GetConVarFloat( "ass_power" ) <= 0.0 || GetConVarFloat( "ass_power" ) > 1.0 )
+        {
+            //print( "[ASS][DEBUG][WARNING] ConVar ass_power must be a value no greater than 1.0 or no less than or equal to 0.0" )
+            automaticFiringRunning = false
+            break
+        }
+        if( GetConVarFloat( "ass_power" ) < 1.0 && GetConVarFloat( "ass_power" ) > 0.0 )
+        {
+            if( IsValid( GetLocalClientPlayer() ) && GetLocalClientPlayer().GetActiveWeapon() != null && weaponEntity != null )
+            {
+                //ConVar ass_power determines the percentage of the weapons maximum fire rate that is to be used
+                wait( ( 1 / weaponEntity.GetWeaponSettingFloat( eWeaponVar.fire_rate ) ) * ( 1 / GetConVarFloat( "ass_power" ) ) )
+            }
+        }
+        wait( 0.0 )
+    }
+    //print( "[ASS][DEBUG] Automatic firing thread ended" )
+}
