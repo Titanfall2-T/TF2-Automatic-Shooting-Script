@@ -6,8 +6,14 @@ bool automaticFiringRunning = false
 
 void function ass_Init()
 {
-    RegisterButtonPressedCallback( GetConVarInt( "ass_attack_button" ), ass_LocalClientPlayerStartedFiring )
-    RegisterButtonReleasedCallback( GetConVarInt( "ass_attack_button" ), ass_LocalClientPlayerStoppedFiring )
+    for( int key = 0; key < 132; key++ )
+    {
+        if( GetKeyBinding( key ) == "+attack" )
+        {
+            RegisterButtonPressedCallback( key, ass_LocalClientPlayerStartedFiring )
+            RegisterButtonReleasedCallback( key, ass_LocalClientPlayerStoppedFiring )
+        }
+    }
 }
 
 void function ass_LocalClientPlayerStartedFiring( int buttonEnum )
